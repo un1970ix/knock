@@ -1,0 +1,34 @@
+{
+  "nodeModulesDir": "auto",
+  "lock": {
+    "path": "deno.lock",
+    "frozen": true
+  },
+  "imports": {
+    "wrangler": "npm:wrangler@4.151.3"
+  },
+  "fmt": {
+    "exclude": [
+      ".cache/",
+      "target/",
+      "build/",
+      "node_modules/",
+      "deno.lock",
+      "Cargo.lock"
+    ]
+  },
+  "lint": {
+    "exclude": [
+      ".cache/",
+      "target/",
+      "build/",
+      "node_modules/"
+    ]
+  },
+  "exclude": [
+    ".cache/",
+    "target/",
+    "build/",
+    "node_modules/"
+  ]
+}

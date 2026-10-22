@@ -1,0 +1,10 @@
+2026.0.0
+
+- Initial release.
+- Rust email reveal API for Cloudflare Workers.
+- Signed proof-of-work challenges, rate limits, and replay prevention.
+- Multiple websites with separate email addresses and allowed origins.
+- Browser client with TypeScript types and no prescribed UI.
+- Automatic cleanup of expired database records.
+- Pinned build tools, dependency audits, and GitHub checks.
+- MIT license.

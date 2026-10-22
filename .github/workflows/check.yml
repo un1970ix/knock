@@ -1,0 +1,52 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Get Source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Check, Audit, and Build
+        run: sh scripts/cloudflare.sh build
+      - name: Test Local Runtime
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          export PATH="$PWD/.cache/deno-bin:$PWD/.cache/cargo/bin:$PATH"
+          python3 - <<'PY'
+          from pathlib import Path
+          import secrets
+          fixture = Path('.dev.vars.example').read_text()
+          Path('.dev.vars').write_text(fixture.replace('YOUR_GENERATED_KEY', secrets.token_urlsafe(32)))
+          Path('.dev.vars').chmod(0o600)
+          PY
+          setsid just wrangler dev > .cache/runtime.log 2>&1 &
+          knock_pid=$!
+          trap 'kill -- -"$knock_pid" 2>/dev/null || true' EXIT
+          knock_ready=false
+          for _ in {1..30}; do
+            if curl --silent --output /dev/null http://127.0.0.1:8787; then
+              knock_ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$knock_ready" != true ]; then
+            cat .cache/runtime.log
+            exit 1
+          fi
+          just test-integration

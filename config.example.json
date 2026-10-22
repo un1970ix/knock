@@ -1,0 +1,10 @@
+{
+  "example": {
+    "origins": ["https://example.com"],
+    "email": "hello@example.com"
+  },
+  "other": {
+    "origins": ["https://example.org"],
+    "email": "hello@example.org"
+  }
+}

@@ -1,0 +1,2 @@
+SITES='{"example":{"origins":["https://example.com","http://127.0.0.1:8000"],"email":"hello@example.com"},"other":{"origins":["https://example.org"],"email":"hello@example.org"}}'
+SIGNING_KEY="YOUR_GENERATED_KEY"
