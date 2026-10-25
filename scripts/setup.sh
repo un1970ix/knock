@@ -22,3 +22,4 @@ export PATH="$CARGO_HOME/bin:$PATH"
 cargo fetch --locked
 sh scripts/tools.sh install
 deno install --frozen
+deno run --frozen --cached-only --no-prompt --allow-read=node_modules --allow-write=node_modules/wrangler/wrangler-dist/cli.js scripts/patch-wrangler.ts install

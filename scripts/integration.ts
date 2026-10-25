@@ -134,6 +134,31 @@ for (let attempt = 0; attempt < 11; attempt++) {
   assert(response.status === 200, "Unexpected rate-limit response.");
 }
 assert(limited, "Issuance rate limit did not apply.");
+
+const remaining = 60_000 - Date.now() % 60_000;
+if (remaining < 20_000) {
+  await new Promise((resolve) => setTimeout(resolve, remaining));
+}
+const minute = Math.floor(Date.now() / 60_000);
+const abusiveClient = { "CF-Connecting-IP": "192.0.2.1" };
+for (let attempt = 0; attempt < 10; attempt++) {
+  await request("/v1/challenge", { site: "example" }, 200, abusiveClient);
+}
+for (let batch = 0; batch < 12; batch++) {
+  await Promise.all(
+    Array.from(
+      { length: 25 },
+      () => request("/v1/challenge", { site: "example" }, 429, abusiveClient),
+    ),
+  );
+}
+assert(
+  Math.floor(Date.now() / 60_000) === minute,
+  "Rate-limit isolation test crossed a minute boundary; repeat the test.",
+);
+await request("/v1/challenge", { site: "example" }, 200, {
+  "CF-Connecting-IP": "192.0.2.2",
+});
 console.log(
-  "Runtime checks passed for CORS, request limits, proof verification, concurrent replay prevention, rate limiting, and uncached responses.",
+  "Runtime checks passed for CORS, request limits, proof verification, concurrent replay prevention, rate limiting, client isolation, and uncached responses.",
 );

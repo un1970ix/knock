@@ -4,9 +4,6 @@
     "path": "deno.lock",
     "frozen": true
   },
-  "imports": {
-    "wrangler": "npm:wrangler@4.151.3"
-  },
   "fmt": {
     "exclude": [
       ".cache/",

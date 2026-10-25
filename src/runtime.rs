@@ -252,12 +252,11 @@ impl Gate {
         let client = protocol::fingerprint(&key, &input.site, &ip, minute);
         let issuing = request.path() == "/v1/challenge";
         let action = if issuing { "issue" } else { "reveal" };
-        if !self.rate(&format!("total:{action}:{minute}"), 300, expiry)?
-            || !self.rate(
-                &format!("client:{action}:{client}"),
-                if issuing { 10 } else { 20 },
-                expiry,
-            )?
+        if !self.rate(
+            &format!("client:{action}:{client}"),
+            if issuing { 10 } else { 20 },
+            expiry,
+        )? || !self.rate(&format!("total:{action}:{minute}"), 300, expiry)?
         {
             return failure(429, "rate_limited");
         }

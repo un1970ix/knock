@@ -2,6 +2,7 @@ name: Check
 
 on:
   push:
+    branches: ["**"]
   pull_request:
 
 permissions:

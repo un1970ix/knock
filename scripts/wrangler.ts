@@ -1,11 +1,13 @@
 import { createRequire } from "node:module";
 import { homedir } from "node:os";
+import { prepareWrangler } from "./patch-wrangler.ts";
 
 const mode = Deno.args[0];
 if (Deno.args.length !== 1 || !["check", "dev", "publish"].includes(mode)) {
   throw new Error("Choose check, dev, or publish.");
 }
 const root = Deno.cwd();
+await prepareWrangler();
 const directory = `${root}/.cache/wrangler`;
 const require = createRequire(
   await Deno.realPath("node_modules/wrangler/package.json"),
